@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-
+---
 $schema: moz://mozilla.org/schemas/glean/metrics/1-0-0
 
 distribution:
@@ -10,10 +10,11 @@ distribution:
     type: string
     lifetime: application
     description: >
-      The distribution channel name of this application. We use this field to recognize Firefox Reality
-      is distributed to which channels, such as wavevr, oculusvr, etc.
+      The distribution channel name of this application.
+      We use this field to recognize Firefox
+      Reality is distributed to which channels,
+      such as wavevrStore, oculusvr, picovr,etc.
     send_in_pings:
-      - baseline
       - events
       - metrics
       - session-end
@@ -80,7 +81,8 @@ searches:
   counts:
     type: labeled_counter
     description: >
-      Counting how many searches are queried in a specific search engine. The search engine `identifier`s are used as keys for this metric.
+      Counting how many searches are queried in a specific search engine.
+      The search engine `identifier`s are used as keys for this metric.
     bugs:
       - https://github.com/MozillaReality/FirefoxReality/issues/2230
     data_reviews:
@@ -153,7 +155,8 @@ firefox_account:
       The user finishes the sign in flow
     extra_keys:
       state:
-        description: "The result of the sign in flow. True in case of success, false in case of error"
+        description: "The result of the sign in flow.
+          True in case of success, false in case of error"
     bugs:
       - https://github.com/MozillaReality/FirefoxReality/issues/1610
     data_reviews:
@@ -166,7 +169,8 @@ firefox_account:
   sign_out:
     type: event
     description: >
-      A user pressed the sign out button on the sync account page and was successfully signed out of FxA
+      A user pressed the sign out button on the sync account page
+      and was successfully signed out of FxA
     bugs:
       - https://github.com/MozillaReality/FirefoxReality/issues/1610
     data_reviews:
@@ -180,7 +184,8 @@ firefox_account:
     type: boolean
     lifetime: application
     description: >
-      Bookmarks sync engine status. True means that the bookmarks sync status is enabled, false otherwise.
+      Bookmarks sync engine status.
+      True means that the bookmarks sync status is enabled, false otherwise.
     bugs:
       - https://github.com/MozillaReality/FirefoxReality/issues/1610
     data_reviews:
@@ -194,7 +199,8 @@ firefox_account:
     type: boolean
     lifetime: application
     description: >
-      History sync engine status. True means that the history sync status is enabled, false otherwise.
+      History sync engine status.
+      True means that the history sync status is enabled, false otherwise.
     bugs:
       - https://github.com/MozillaReality/FirefoxReality/issues/1610
     data_reviews:
