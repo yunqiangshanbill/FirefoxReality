@@ -660,17 +660,8 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
     }
 
     public void setWindowPlacement(@NonNull Windows.WindowPlacement aPlacement) {
-        if (mActive) {
-            TelemetryWrapper.activePlacementEvent(mWindowPlacement.getValue(), false);
-        }
-
         mWindowPlacement = aPlacement;
-
         mViewModel.setPlacement(mWindowPlacement);
-
-        if (mActive) {
-            TelemetryWrapper.activePlacementEvent(mWindowPlacement.getValue(), true);
-        }
     }
 
     public void setIsOnlyWindow(boolean isOnlyWindow) {
@@ -729,6 +720,7 @@ public class WindowWidget extends UIWidget implements SessionChangeListener,
         hideContextMenus();
 
         TelemetryWrapper.activePlacementEvent(mWindowPlacement.getValue(), mActive);
+        GleanMetricsService.activePlacementEvent(mWindowPlacement.getValue(), mActive);
         updateBorder();
 
         mViewModel.setIsActiveWindow(active);
