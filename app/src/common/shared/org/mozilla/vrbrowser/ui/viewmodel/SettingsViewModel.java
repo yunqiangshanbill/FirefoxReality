@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableBoolean;
+import androidx.databinding.ObservableInt;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
@@ -16,6 +17,7 @@ public class SettingsViewModel extends AndroidViewModel {
     private MutableLiveData<ObservableBoolean> isDRMEnabled;
     private MutableLiveData<ObservableBoolean> isPopupBlockingEnabled;
     private MutableLiveData<ObservableBoolean> isWebXREnabled;
+    private MutableLiveData<ObservableInt> versionCode;
 
     public SettingsViewModel(@NonNull Application application) {
         super(application);
@@ -24,6 +26,7 @@ public class SettingsViewModel extends AndroidViewModel {
         isDRMEnabled = new MutableLiveData<>(new ObservableBoolean(false));
         isPopupBlockingEnabled = new MutableLiveData<>(new ObservableBoolean(false));
         isWebXREnabled = new MutableLiveData<>(new ObservableBoolean(false));
+        versionCode = new MutableLiveData<>(new ObservableInt());
     }
 
     public void refresh() {
@@ -39,6 +42,9 @@ public class SettingsViewModel extends AndroidViewModel {
 
         boolean webxrEnabled = SettingsStore.getInstance(getApplication().getBaseContext()).isWebXREnabled();
         isWebXREnabled = new MutableLiveData<>(new ObservableBoolean(webxrEnabled));
+
+        int appVersionCode = SettingsStore.getInstance(getApplication().getBaseContext()).getAppVersionCode();
+        versionCode = new MutableLiveData<>(new ObservableInt(appVersionCode));
     }
 
     public void setIsTrackingProtectionEnabled(boolean isEnabled) {
@@ -71,6 +77,14 @@ public class SettingsViewModel extends AndroidViewModel {
 
     public MutableLiveData<ObservableBoolean> getIsWebXREnabled() {
         return isWebXREnabled;
+    }
+
+    public void setVersionCode(int appVersionCode) {
+        this.versionCode.setValue(new ObservableInt(appVersionCode));
+    }
+
+    public MutableLiveData<ObservableInt> getVersionCode() {
+        return versionCode;
     }
 
 }

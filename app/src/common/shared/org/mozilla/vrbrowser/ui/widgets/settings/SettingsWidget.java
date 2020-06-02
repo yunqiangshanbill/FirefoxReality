@@ -24,17 +24,21 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 
 import org.mozilla.vrbrowser.BuildConfig;
 import org.mozilla.vrbrowser.R;
+import org.mozilla.vrbrowser.VRBrowserActivity;
 import org.mozilla.vrbrowser.VRBrowserApplication;
 import org.mozilla.vrbrowser.audio.AudioEngine;
 import org.mozilla.vrbrowser.browser.Accounts;
+import org.mozilla.vrbrowser.browser.SettingsStore;
 import org.mozilla.vrbrowser.browser.engine.Session;
 import org.mozilla.vrbrowser.browser.engine.SessionStore;
 import org.mozilla.vrbrowser.databinding.SettingsBinding;
 import org.mozilla.vrbrowser.db.SitePermission;
 import org.mozilla.vrbrowser.telemetry.GleanMetricsService;
+import org.mozilla.vrbrowser.ui.viewmodel.SettingsViewModel;
 import org.mozilla.vrbrowser.ui.widgets.UIWidget;
 import org.mozilla.vrbrowser.ui.widgets.WidgetPlacement;
 import org.mozilla.vrbrowser.ui.widgets.WindowWidget;
@@ -63,6 +67,7 @@ public class SettingsWidget extends UIDialog implements SettingsView.Delegate {
     private Accounts mAccounts;
     private Executor mUIThreadExecutor;
     private SettingsView.SettingViewType mOpenDialog;
+    private SettingsViewModel mSettingsViewModel;
 
     class VersionGestureListener extends GestureDetector.SimpleOnGestureListener {
 
@@ -120,6 +125,13 @@ public class SettingsWidget extends UIDialog implements SettingsView.Delegate {
 
         // Inflate this data binding layout
         mBinding = DataBindingUtil.inflate(inflater, R.layout.settings, this, true);
+
+        mSettingsViewModel = new ViewModelProvider(
+                (VRBrowserActivity)getContext(),
+                ViewModelProvider.AndroidViewModelFactory.getInstance(((VRBrowserActivity) getContext()).getApplication()))
+                .get(SettingsViewModel.class);
+
+        mBinding.setSettingsmodel(mSettingsViewModel);
 
         mBinding.backButton.setOnClickListener(v -> {
             if (mAudio != null) {
@@ -220,6 +232,12 @@ public class SettingsWidget extends UIDialog implements SettingsView.Delegate {
             }
 
             showView(SettingsView.SettingViewType.CONTROLLER);
+        });
+
+        mBinding.whatsNewButton.setOnClickListener(v -> {
+            SettingsStore.getInstance(getContext()).setAppVersionCode(BuildConfig.VERSION_CODE);
+            mWidgetManager.openNewTabForeground(getContext().getString(R.string.release_notes_url, BuildConfig.VERSION_NAME));
+            onDismiss();
         });
 
         mCurrentView = null;

@@ -29,6 +29,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import org.mozilla.geckoview.GeckoSession;
 import org.mozilla.geckoview.GeckoSessionSettings;
+import org.mozilla.vrbrowser.BuildConfig;
 import org.mozilla.vrbrowser.R;
 import org.mozilla.vrbrowser.VRBrowserActivity;
 import org.mozilla.vrbrowser.VRBrowserApplication;
@@ -43,6 +44,7 @@ import org.mozilla.vrbrowser.databinding.NavigationBarBinding;
 import org.mozilla.vrbrowser.db.SitePermission;
 import org.mozilla.vrbrowser.search.suggestions.SuggestionsProvider;
 import org.mozilla.vrbrowser.telemetry.TelemetryWrapper;
+import org.mozilla.vrbrowser.ui.viewmodel.SettingsViewModel;
 import org.mozilla.vrbrowser.ui.viewmodel.TrayViewModel;
 import org.mozilla.vrbrowser.ui.viewmodel.WindowViewModel;
 import org.mozilla.vrbrowser.ui.views.NavigationURLBar;
@@ -91,6 +93,7 @@ public class NavigationBarWidget extends UIWidget implements GeckoSession.Naviga
 
     private WindowViewModel mViewModel;
     private TrayViewModel mTrayViewModel;
+    private SettingsViewModel mSettingsViewModel;
     private NavigationBarBinding mBinding;
     private AudioEngine mAudio;
     private WindowWidget mAttachedWindow;
@@ -251,6 +254,11 @@ public class NavigationBarWidget extends UIWidget implements GeckoSession.Naviga
             if (mAudio != null) {
                 mAudio.playSound(AudioEngine.Sound.CLICK);
             }
+        });
+
+        mBinding.navigationBarNavigation.whatsNew.setOnClickListener(v -> {
+            SettingsStore.getInstance(getContext()).setAppVersionCode(BuildConfig.VERSION_CODE);
+            mWidgetManager.openNewTabForeground(getContext().getString(R.string.release_notes_url, BuildConfig.VERSION_NAME));
         });
 
         mBinding.navigationBarNavigation.menuButton.setOnClickListener(view -> {
@@ -509,6 +517,10 @@ public class NavigationBarWidget extends UIWidget implements GeckoSession.Naviga
             mViewModel.getIsPopUpBlocked().removeObserver(mIsPopUpBlockedListener);
             mViewModel = null;
         }
+
+        if (mSettingsViewModel != null) {
+            mSettingsViewModel = null;
+        }
     }
 
     @Override
@@ -525,8 +537,15 @@ public class NavigationBarWidget extends UIWidget implements GeckoSession.Naviga
                 (VRBrowserActivity)getContext(),
                 ViewModelProvider.AndroidViewModelFactory.getInstance(((VRBrowserActivity) getContext()).getApplication()))
                 .get(String.valueOf(mAttachedWindow.hashCode()), WindowViewModel.class);
+        mSettingsViewModel = new ViewModelProvider(
+                (VRBrowserActivity)getContext(),
+                ViewModelProvider.AndroidViewModelFactory.getInstance(((VRBrowserActivity) getContext()).getApplication()))
+                .get(SettingsViewModel.class);
 
         mBinding.setViewmodel(mViewModel);
+        mBinding.setSettingsmodel(mSettingsViewModel);
+
+        mSettingsViewModel.refresh();
 
         mViewModel.getIsActiveWindow().observeForever(mIsActiveWindowObserver);
         mViewModel.getIsPopUpBlocked().observeForever(mIsPopUpBlockedListener);

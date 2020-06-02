@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import org.mozilla.geckoview.ContentBlocking;
 import org.mozilla.geckoview.GeckoSessionSettings;
 import org.mozilla.telemetry.TelemetryHolder;
+import org.mozilla.vrbrowser.BuildConfig;
 import org.mozilla.vrbrowser.R;
 import org.mozilla.vrbrowser.VRBrowserActivity;
 import org.mozilla.vrbrowser.telemetry.GleanMetricsService;
@@ -747,6 +748,18 @@ public class SettingsStore {
 
     public @Storage int getDownloadsSortingOrder() {
         return mPrefs.getInt(mContext.getString(R.string.settings_key_downloads_sorting_order), DOWNLOADS_SORTING_ORDER_DEFAULT);
+    }
+
+    public void setAppVersionCode(int versionCode) {
+        SharedPreferences.Editor editor = mPrefs.edit();
+        editor.putInt(mContext.getString(R.string.settings_key_app_version), versionCode);
+        editor.commit();
+
+        mSettingsViewModel.setVersionCode(versionCode);
+    }
+
+    public int getAppVersionCode() {
+        return mPrefs.getInt(mContext.getString(R.string.settings_key_app_version), BuildConfig.VERSION_CODE);
     }
 }
 
