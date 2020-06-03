@@ -759,7 +759,7 @@ public class SettingsStore {
     }
 
     public int getAppVersionCode() {
-        return mPrefs.getInt(mContext.getString(R.string.settings_key_app_version), BuildConfig.VERSION_CODE);
+        return mPrefs.getInt(mContext.getString(R.string.settings_key_app_version), 0);
     }
 }
 
